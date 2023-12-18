@@ -12,3 +12,14 @@ sky:
     access-key-id: LTAI5t7QW8VX4FE4ch2oiH7F
     access-key-secret: fU1ARJ9hoFBx5pGnggULSXlF3Si26m
     bucket-name: project-sky-zggyii
+
+  redis:
+    host: localhost
+    port: 6379
+    password: "123456"
+    database: 10
+
+
+  wechat:
+    appid: wx2159c39f7b61a790
+    secret: e4944595fb7fba8cf2fb23aad1b4e4c9
