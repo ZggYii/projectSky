@@ -195,4 +195,16 @@ public class DishServiceImpl implements DishService {
 
         return dishVOList;
     }
+
+
+    /**
+     * 菜品起售、停售
+     * @param status
+     * @param id
+     * @return
+     */
+    public void startOrStop(Integer status, Long id) {
+        // 起售套餐的时候检查里面的菜品有没有停售的
+        dishMapper.startOrStop(status, id);
+    }
 }
