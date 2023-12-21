@@ -19,6 +19,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,8 @@ public class OrderServiceImpl implements OrderService {
     private AddressBookMapper addressBookMapper;
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 用户下单接口
@@ -147,7 +150,8 @@ public class OrderServiceImpl implements OrderService {
     public void paySuccess(String outTradeNo) {
 
         // 根据订单号查询订单
-        Orders ordersDB = orderMapper.getByNumber(outTradeNo);
+        Long userId = BaseContext.getCurrentId();
+        Orders ordersDB = orderMapper.getByNumberAndUserId(outTradeNo, userId);
 
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
         Orders orders = Orders.builder()
@@ -158,6 +162,15 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
+        // 通过webSocket向浏览器推送消息
+        Map map = new HashMap();
+        map.put("type", 1); // 1表示来单提醒、2表示客户催单
+        map.put("orderId", ordersDB.getId());
+        map.put("content","订单号：" + outTradeNo);
+
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
     }
 
 

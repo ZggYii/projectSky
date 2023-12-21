@@ -24,8 +24,8 @@ public interface OrderMapper {
      * @param outTradeNo
      * @return
      */
-    @Select("select * from orders where number = #{outTradeNo}")
-    Orders getByNumber(String outTradeNo);
+    @Select("select * from sky_take_out.orders where number = #{outTradeNo} and user_id = #{userId}")
+    Orders getByNumberAndUserId(String outTradeNo, Long userId);
 
 
     /**
